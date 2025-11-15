@@ -76,3 +76,115 @@ web-examen
 web-examen
 PS F:\SGBD\tony-sosa-examen-SistemasOperativos>
 -------------------------
+1.2
+---------------------------------------------------------------
+# Crear el volumen datos-examen para persistencia de Postgres
+PS F:\SGBD\tony-sosa-examen-SistemasOperativos> docker volume create datos-examen
+>>
+datos-examen
+PS F:\SGBD\tony-sosa-examen-SistemasOperativos>
+---------------------------------
+
+# Verificar que el volumen datos-examen existe
+PS F:\SGBD\tony-sosa-examen-SistemasOperativos> docker volume ls
+>>
+DRIVER    VOLUME NAME
+local     7afd5d86eb30c1846c5e47fa31d76fa0ed74daa42777ffdfc5b598bd6258d595
+local     84532af0618b1fd1a9b956645297bf957da7e387bb1d94427852f7d97e6019ee
+local     datos-examen
+local     datos-mysql
+local     e112de4b02744f896e2e9d84db0469d5d3f58ad2b1573f497696d45a57a27372
+local     ejercicio-entornos_db-data
+local     ejercicio-lamp_db-data
+local     ejercicio-node-mongo_mongo-data
+local     iacademic-generator_backend_mssql-data
+-------------------------------
+
+# Crear contenedor Postgres usando el volumen datos-examen
+PS F:\SGBD\tony-sosa-examen-SistemasOperativos> docker run -d --name db-examen -e POSTGRES_PASSWORD=examen123 -e POSTGRES_DB=testdb -v datos-examen:/var/lib/postgresql/data -p 5432:5432 postgres:15-alpine
+>>
+ea9eb273dd36689467efacf6ff89762f934c541af9c0018d98c77da90facd549
+PS F:\SGBD\tony-sosa-examen-SistemasOperativos>
+------------------------------------
+
+# Verificar que el contenedor db-examen está corriendo
+PS F:\SGBD\tony-sosa-examen-SistemasOperativos> docker ps
+>>
+CONTAINER ID   IMAGE                COMMAND                  CREATED          STATUS          PORTS                                         NAMES
+ea9eb273dd36   postgres:15-alpine   "docker-entrypoint.s…"   20 seconds ago   Up 19 seconds   0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp   db-examen
+PS F:\SGBD\tony-sosa-examen-SistemasOperativos>
+-------------------------
+
+# Crear tabla alumnos en la base de datos testdb
+PS F:\SGBD\tony-sosa-examen-SistemasOperativos> docker exec -it db-examen psql -U postgres -d testdb -c "CREATE TABLE alumnos (id SERIAL PRIMARY KEY, nombre TEXT);"
+>>
+CREATE TABLE
+PS F:\SGBD\tony-sosa-examen-SistemasOperativos>
+-----------------------------------
+
+# Insertar dato de prueba en la tabla alumnos
+PS F:\SGBD\tony-sosa-examen-SistemasOperativos> docker exec -it db-examen psql -U postgres -d testdb -c "INSERT INTO alumnos (nombre) VALUES ('Tony');"
+>>
+INSERT 0 1
+PS F:\SGBD\tony-sosa-examen-SistemasOperativos>
+-----------------------------------------
+
+# Consultar tabla alumnos para verificar que el dato se guardó
+PS F:\SGBD\tony-sosa-examen-SistemasOperativos> docker exec -it db-examen psql -U postgres -d testdb -c "SELECT * FROM alumnos;"
+>>
+ id | nombre
+----+--------
+  1 | Tony
+(1 row)
+
+PS F:\SGBD\tony-sosa-examen-SistemasOperativos>
+----------------------------------------------
+
+# Detener y eliminar el contenedor db-examen (sin borrar el volumen)
+PS F:\SGBD\tony-sosa-examen-SistemasOperativos> docker stop db-examen
+>> docker rm db-examen
+>>
+db-examen
+db-examen
+PS F:\SGBD\tony-sosa-examen-SistemasOperativos>
+---------------------------------------
+
+# Confirmar que el volumen datos-examen sigue existiendo después de eliminar el contenedor
+PS F:\SGBD\tony-sosa-examen-SistemasOperativos> docker volume ls
+>>
+DRIVER    VOLUME NAME
+local     7afd5d86eb30c1846c5e47fa31d76fa0ed74daa42777ffdfc5b598bd6258d595
+local     84532af0618b1fd1a9b956645297bf957da7e387bb1d94427852f7d97e6019ee
+local     datos-examen
+local     datos-mysql
+local     e112de4b02744f896e2e9d84db0469d5d3f58ad2b1573f497696d45a57a27372
+local     ejercicio-entornos_db-data
+local     ejercicio-lamp_db-data
+local     ejercicio-node-mongo_mongo-data
+local     iacademic-generator_backend_mssql-data
+PS F:\SGBD\tony-sosa-examen-SistemasOperativos>
+--------------------------------------
+
+# Crear nuevamente el contenedor db-examen usando el mismo volumen
+PS F:\SGBD\tony-sosa-examen-SistemasOperativos> docker run -d --name db-examen -e POSTGRES_PASSWORD=examen123 -e POSTGRES_DB=testdb -v datos-examen:/var/lib/postgresql/data -p 5432:5432 postgres:15-alpine
+>>
+8d4613979fad0adf96a133d6b5192153e6dab88b46c858ba8f630d89b64f5ff1
+PS F:\SGBD\tony-sosa-examen-SistemasOperativos>
+-----------------------------------
+
+# Consultar tabla alumnos nuevamente para comprobar persistencia de datos
+PS F:\SGBD\tony-sosa-examen-SistemasOperativos> docker exec -it db-examen psql -U postgres -d testdb -c "SELECT * FROM alumnos;"
+>>
+ id | nombre
+----+--------
+  1 | Tony
+(1 row)
+
+PS F:\SGBD\tony-sosa-examen-SistemasOperativos>
+
+
+
+
+
+
+
