@@ -1,0 +1,127 @@
+PS F:\SGBD\tony-sosa-examen-SistemasOperativos\parte2> docker build -t mi-app-python:examen .
+>>
+[+] Building 10.7s (11/11) FINISHED                                                                docker:desktop-linux
+ => [internal] load build definition from Dockerfile                                                               0.0s
+ => => transferring dockerfile: 545B                                                                               0.0s
+ => [internal] load metadata for docker.io/library/python:3.11-slim                                                0.8s
+ => [internal] load .dockerignore                                                                                  0.1s
+ => => transferring context: 175B                                                                                  0.0s
+ => [1/6] FROM docker.io/library/python:3.11-slim@sha256:e4676722fba839e2e5cdb844a52262b43e90e56dbd55b7ad953ee361  0.0s
+ => => resolve docker.io/library/python:3.11-slim@sha256:e4676722fba839e2e5cdb844a52262b43e90e56dbd55b7ad953ee361  0.0s
+ => [internal] load build context                                                                                  0.0s
+ => => transferring context: 543B                                                                                  0.0s
+ => CACHED [2/6] WORKDIR /app                                                                                      0.0s
+ => [3/6] COPY requirements.txt .                                                                                  0.0s
+ => [4/6] RUN pip install --no-cache-dir -r requirements.txt                                                       7.5s
+ => [5/6] COPY app.py .                                                                                            0.1s
+ => [6/6] RUN useradd -ms /bin/bash appuser                                                                        0.3s
+ => exporting to image                                                                                             1.6s
+ => => exporting layers                                                                                            1.0s
+ => => exporting manifest sha256:757f198d846de72b7377c08a5623102b858b919d8a70b31dad02e88626a0c9dc                  0.0s
+ => => exporting config sha256:1b17dc1f99fc2e3da1c146692e6d46a60e0206291688ff6c909dd32c0cce740e                    0.0s
+ => => exporting attestation manifest sha256:bfca36ef751c875b509857c46e4040298f975e9bbb712f493e43f28fb05fb05c      0.0s
+ => => exporting manifest list sha256:2181a767ec91e5d126cb12a0d7a356775c9e9bd10df74bdb5cd535bd3aae646d             0.0s
+ => => naming to docker.io/library/mi-app-python:examen                                                            0.0s
+ => => unpacking to docker.io/library/mi-app-python:examen                                                         0.5s
+PS F:\SGBD\tony-sosa-examen-SistemasOperativos\parte2>
+-------------------------------------------------
+
+PS F:\SGBD\tony-sosa-examen-SistemasOperativos\parte2> docker build -t mi-app-python:examen .
+>>
+[+] Building 0.8s (11/11) FINISHED                                                                 docker:desktop-linux
+ => [internal] load build definition from Dockerfile                                                               0.0s
+ => => transferring dockerfile: 545B                                                                               0.0s
+ => [internal] load metadata for docker.io/library/python:3.11-slim                                                0.3s
+ => [internal] load .dockerignore                                                                                  0.0s
+ => => transferring context: 175B                                                                                  0.0s
+ => [1/6] FROM docker.io/library/python:3.11-slim@sha256:e4676722fba839e2e5cdb844a52262b43e90e56dbd55b7ad953ee361  0.0s
+ => => resolve docker.io/library/python:3.11-slim@sha256:e4676722fba839e2e5cdb844a52262b43e90e56dbd55b7ad953ee361  0.0s
+ => [internal] load build context                                                                                  0.0s
+ => => transferring context: 63B                                                                                   0.0s
+ => CACHED [2/6] WORKDIR /app                                                                                      0.0s
+ => CACHED [3/6] COPY requirements.txt .                                                                           0.0s
+ => CACHED [4/6] RUN pip install --no-cache-dir -r requirements.txt                                                0.0s
+ => CACHED [5/6] COPY app.py .                                                                                     0.0s
+ => CACHED [6/6] RUN useradd -ms /bin/bash appuser                                                                 0.0s
+ => exporting to image                                                                                             0.1s
+ => => exporting layers                                                                                            0.0s
+ => => exporting manifest sha256:757f198d846de72b7377c08a5623102b858b919d8a70b31dad02e88626a0c9dc                  0.0s
+ => => exporting config sha256:1b17dc1f99fc2e3da1c146692e6d46a60e0206291688ff6c909dd32c0cce740e                    0.0s
+ => => exporting attestation manifest sha256:436e9fa96f8dd1a15355a69ba021f810a98d8122cf237e848b8e4fc9158dd939      0.0s
+ => => exporting manifest list sha256:e50755aecb75ab3186c0735814c0eb56c2e5ff2b53271eaa8a76c0df887e1fef             0.0s
+ => => naming to docker.io/library/mi-app-python:examen                                                            0.0s
+ => => unpacking to docker.io/library/mi-app-python:examen
+
+
++---------------------------------------
+# Ejecutar el contenedor app-examen mapeando el puerto 5000
+
+PS F:\SGBD\tony-sosa-examen-SistemasOperativos\parte2> docker run -d --name app-examen -p 5000:5000 mi-app-python:examen
+>>
+1432e5c44e342c35e38c65e32acc7b71001ec3f8b61a104a48416b9cb06722a4
+PS F:\SGBD\tony-sosa-examen-SistemasOperativos\parte2>
+
+---------------------------------------------
+PS F:\SGBD\tony-sosa-examen-SistemasOperativos\parte2> curl http://localhost:5000/
+>>
+
+
+StatusCode        : 200
+StatusDescription : OK
+Content           : {"estudiante":"Tony Sosa","mensaje":"Examen Docker"}
+
+RawContent        : HTTP/1.1 200 OK
+                    Connection: close
+                    Content-Length: 53
+                    Content-Type: application/json
+                    Date: Sat, 15 Nov 2025 23:54:43 GMT
+                    Server: Werkzeug/3.1.3 Python/3.11.14
+
+                    {"estudiante":"Tony Sosa","mensaje...
+Forms             : {}
+Headers           : {[Connection, close], [Content-Length, 53], [Content-Type, application/json], [Date, Sat, 15 Nov
+                    2025 23:54:43 GMT]...}
+Images            : {}
+InputFields       : {}
+Links             : {}
+ParsedHtml        : mshtml.HTMLDocumentClass
+RawContentLength  : 53
+
+
+
+PS F:\SGBD\tony-sosa-examen-SistemasOperativos\parte2>
+-----------------------------------------
+#Salud
+
+
+PS F:\SGBD\tony-sosa-examen-SistemasOperativos\parte2> curl http://localhost:5000/salud
+>>
+
+
+StatusCode        : 200
+StatusDescription : OK
+Content           : {"status":"ok"}
+
+RawContent        : HTTP/1.1 200 OK
+                    Connection: close
+                    Content-Length: 16
+                    Content-Type: application/json
+                    Date: Sat, 15 Nov 2025 23:55:50 GMT
+                    Server: Werkzeug/3.1.3 Python/3.11.14
+
+                    {"status":"ok"}
+
+Forms             : {}
+Headers           : {[Connection, close], [Content-Length, 16], [Content-Type, application/json], [Date, Sat, 15 Nov
+                    2025 23:55:50 GMT]...}
+Images            : {}
+InputFields       : {}
+Links             : {}
+ParsedHtml        : mshtml.HTMLDocumentClass
+RawContentLength  : 16
+
+
+
+PS F:\SGBD\tony-sosa-examen-SistemasOperativos\parte2>
+------------------------
+
