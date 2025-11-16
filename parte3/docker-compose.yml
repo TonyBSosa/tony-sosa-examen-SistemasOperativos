@@ -1,0 +1,49 @@
+version: "3.8"
+
+services:
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    environment:
+      - NODE_ENV=development
+      - DB_HOST=db
+      - DB_NAME=examdb
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    networks:
+      - backend
+
+  web:
+    image: nginx:alpine
+    volumes:
+      - ./web:/usr/share/nginx/html
+    ports:
+      - "8080:80"
+    depends_on:
+      - api
+    networks:
+      - frontend
+      - backend
+
+  db:
+    image: mongo:6.0
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=examen123
+      - MONGO_INITDB_DATABASE=examdb
+    volumes:
+      - db-data:/data/db
+    networks:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  db-data:
+
+networks:
+  frontend:
+  backend:
+
